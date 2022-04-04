@@ -1,20 +1,50 @@
-import React from 'react';
+import { Console } from "jest-util";
+import React, { Component } from "react";
 import { View, StyleSheet, Text } from 'react-native';
 import { db } from '../firebase/config';
 
-export default function Profile(){
+export default class Profile extends Component{
     
-    const profileInfo = () => {
-        db.collection("profile").where('', '', '').onSnapshot((docs) => {
-        
+    constructor() {
+        super();
+        this.state = {
+            profile: {}
+        };
+    }
+    
+    
+    traerDatosDePerfil() {
+        db.collection("profile").onSnapshot((docs) => {
+            let datosPerfil = [];
+            docs.forEach((doc) => {
+                datosPerfil.push({
+                    id: doc.id,
+                    data: doc.data(),
+                });
+        });
+
+            this.setState({
+                profile: datosPerfil[0]
+            })
+           
+
         });
     }
 
-    return(
-        <View style={styles.container}>
-            <Text>Escribir el perfil del usuario</Text>
-        </View>
-    )
+
+    render(){
+        console.log(this.state.profile);
+        return(
+            <View style={styles.container}>
+                <Text>Renderizar los datos del usuario</Text>
+                <Text>Fecha de nacimiento: ...</Text>
+                <Text >Grupo sanguíneo: ...</Text>
+                <Text >Cantidad de hermanos: ...</Text>
+                <Text >Película favorita: ...</Text>
+                <Text >Serie favorita: ...</Text>
+            </View>
+        )
+    }
 }
 
 const styles = StyleSheet.create({

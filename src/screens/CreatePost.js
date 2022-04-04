@@ -4,19 +4,29 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 
 import { db } from "../firebase/config";
 
 export default class CreatePost extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+
+    }
   }
 
   handlePost() {
-    db.collection("posts").add()
+    db.collection("publicaciones").add(
+
+    )
     .then((response) => {
-      
+      console.log('creado')
+      this.setState({
+        descripcion: '',
+        titulo: '',
+      })
+      this.props.navigation.navigate('Home')
     })
     .catch(() => {
       alert("Error en el posteo");
@@ -24,12 +34,24 @@ export default class CreatePost extends Component {
   }
 
   render() {
+    console.log(this.props.navigation);
     return (
-      <>
+      <React.Fragment>
         <View style={styles.container}>
-            <Text>Escribir el Formulario</Text>
+           <TextInput 
+           onChangeText={(text) => this.setState({ descripcion: text})}
+           placeholder="Descripcion"
+           keyboardType="default"
+           />
+           <TouchableOpacity
+           style={styles.button}
+           onPress={() => this.handlePost()}
+           >
+             <Text style= {styles.textButton}> Agrefar posteo</Text>
+           </TouchableOpacity>
+
         </View>
-      </>
+      </React.Fragment>
     );
   }
 }

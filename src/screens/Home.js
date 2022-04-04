@@ -1,30 +1,44 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { db } from "../firebase/config";
-import { static_posts } from "../data";
+import Post from "../components/Post";
+import { FlatList } from "react-native-gesture-handler";
+
+
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      posts:[]
+    };
   }
   
   componentDidMount() {
-    db.collection("posts").orderBy("cratedAt", "desc").onSnapshot((docs) => {
-      let postsAux = [];
+    db.collection('publicaciones').onSnapshot((docs) => {
+      let posteos = [];
       docs.forEach((doc) => {
-        postsAux.push({
+        posteos.push({
           id: doc.id,
           data: doc.data(),
         });
       });
+this.setState({
+  posts: posteos,
+})
+    
     });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Escribir el listado de posteos.</Text>
+        <FlatList
+        data={this.state.posts}
+        keyExtractor={(post) => post.id}
+        renderItem={({item}) => <Post postData={item}/>}
+        />
+        
       </View>
     );
   }
@@ -38,8 +52,10 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "black",
-    fontSize: 12,
-    margin: 5,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 20,
     fontFamily: 'Montserrat',
     textAlign: 'center'
   },
